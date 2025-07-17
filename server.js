@@ -4,12 +4,25 @@ const cors = require('cors');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
+const qrRoutes = require('./routes/qrRoutes');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ===================================
 app.use('/api/auth', authRoutes);
+app.use('/api/qr', qrRoutes);
+// ===================================
+
+// mema lang from YT
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'Server is running',
+    timestamp: new Date().toISOString()
+  });
+});
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -22,3 +35,5 @@ mongoose.connect(process.env.MONGO_URI, {
 }).catch(err => {
   console.error('Connection error:', err);
 });
+
+module.exports = app;
