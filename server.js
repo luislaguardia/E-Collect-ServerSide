@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
 const qrRoutes = require('./routes/qrRoutes');
+const scanRoutes = require('./routes/simpleScanRoutes');
 
 const app = express();
 app.use(cors());
@@ -13,9 +14,9 @@ app.use(express.json());
 // ===================================
 app.use('/api/auth', authRoutes);
 app.use('/api/qr', qrRoutes);
+app.use('/api', scanRoutes);
 // ===================================
 
-// mema lang from YT
 app.get('/api/health', (req, res) => {
   res.json({ 
     success: true, 
@@ -37,3 +38,8 @@ mongoose.connect(process.env.MONGO_URI, {
 });
 
 module.exports = app;
+
+// notes
+// new added;
+// simpleScanController, Transaction, simpleScanRoutes
+// im not using the qrController shits now... 

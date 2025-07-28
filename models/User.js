@@ -23,6 +23,12 @@ const transactionSchema = new mongoose.Schema({
     enum: ['success', 'failed', 'duplicate'],
     default: 'success'
   },
+
+  // Anew addeddddd
+points: {
+  type: Number,
+  default: 0
+},
   // Optional: Store additional scan details
   scanDetails: {
     userAgent: String,
