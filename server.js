@@ -4,7 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
-const qrRoutes = require('./routes/qrRoutes');
+// const qrRoutes = require('./routes/qrRoutes'); == not sueu fnoww
 const scanRoutes = require('./routes/simpleScanRoutes');
 
 const app = express();
@@ -13,7 +13,7 @@ app.use(express.json());
 
 // ===================================
 app.use('/api/auth', authRoutes);
-app.use('/api/qr', qrRoutes);
+// app.use('/api/qr', qrRoutes); == -------- not sueu fnoww
 app.use('/api', scanRoutes);
 // ===================================
 
