@@ -5,7 +5,7 @@ const { authMiddleware } = require('../middleware/authMiddleware');
 
 // if want, put back the middleware "authMiddleware"
 
-router.post('/scan', simpleScanController.scanQR);
+router.post('/scan', authMiddleware, simpleScanController.scanQR);
 
 // router.get('/activity', simpleScanController.getActivity);
 // router.get('/rewards', simpleScanController.getRewards);
