@@ -4,15 +4,15 @@ const simpleScanController = require('../controllers/simpleScanController');
 const { authMiddleware } = require('../middleware/authMiddleware');
 
 // Scan QR code
-router.post('/scan', authMiddleware, simpleScanController.scanQR);
+router.post('/scan', simpleScanController.scanQR);
 
 // Get activity/transaction history
-router.get('/activity', authMiddleware, simpleScanController.getActivity);
+router.get('/activity', simpleScanController.getActivity);
 
 // Get available rewards
-router.get('/rewards', authMiddleware, simpleScanController.getRewards);
+router.get('/rewards', simpleScanController.getRewards);
 
 // Redeem reward
-router.post('/redeem/:rewardId', authMiddleware, simpleScanController.redeemReward);
+router.post('/redeem/:rewardId', simpleScanController.redeemReward);
 
 module.exports = router;
