@@ -71,7 +71,7 @@ const login = async (req, res) => {
 // user profile with transac stats and recent history
 const getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id); // fix
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
