@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Transaction = require('../models/Transaction'); // 
 
 const generateToken = (user) => {
   return jwt.sign(
@@ -71,16 +72,26 @@ const login = async (req, res) => {
 // user profile with transac stats and recent history
 const getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id); // fix
+    const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const stats = typeof user.getTransactionStats === 'function'
-      ? user.getTransactionStats()
-      : {};
+    // Fetch recent 5 transactions manually
+    const recentTransactions = await Transaction.find({ userId: user._id })
+      .sort({ scannedDate: -1 })
+      .limit(5);
 
-    const recentTransactions = user.getTransactionHistory?.(1, 5)?.transactions || [];
+    // Calculate total points
+    const totalPoints = await Transaction.aggregate([
+      { $match: { userId: user._id } },
+      { $group: { _id: null, total: { $sum: "$points" } } }
+    ]);
+
+    const stats = {
+      totalPoints: totalPoints[0]?.total || 0,
+      totalScans: await Transaction.countDocuments({ userId: user._id })
+    };
 
     res.json({
       success: true,
@@ -93,6 +104,7 @@ const getProfile = async (req, res) => {
       }
     });
   } catch (err) {
+    console.error('Profile fetch error:', err.message);
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
