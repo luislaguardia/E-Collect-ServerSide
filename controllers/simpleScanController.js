@@ -21,31 +21,43 @@ exports.scanQR = async (req, res) => {
       return res.status(400).json({ error: 'Invalid QR data format' });
     }
 
-    const incentive = Number(decoded.incentiveVal) || 0;
+    // Extract from scanned QR payload
+    const scannedObject = decoded.object || 'Unknown Object';
+    const category = decoded.category || 'General';
+    const locationTag = decoded.location || '';
+    const locationCode = decoded.location_code || '';
+    const vendoMachineCode = decoded.machine_code || '';
+    const itemCateg = decoded.item_category || '';
+    const itemStatus = decoded.item_status || '';
+    const itemVal = decoded.item_value || 'Unknown';
+    const phpValue = decoded.php_value || 'Unknown';
+    const incentiveVal = decoded.incentive || 0;
+
+    const numericPoints = parseFloat(incentiveVal) || 0;
 
     const transaction = new Transaction({
       transactionId: uuidv4(),
       userId: req.user._id,
-      scannedObject: decoded.scannedObject || 'Unknown Object',
-      category: decoded.category || 'General',
-      locationTag: decoded.locationTag || '',
-      locationCode: decoded.locationCode || '',
-      vendoMachineCode: decoded.vendoMachineCode || '',
-      itemCateg: decoded.itemCateg || '',
-      itemStatus: decoded.itemStatus || '',
-      itemVal: decoded.itemVal || 0,
-      incentiveVal: incentive,
-      phpValue: decoded.phpValue || 0,
+      scannedObject,
+      category,
+      locationTag,
+      locationCode,
+      vendoMachineCode,
+      itemCateg,
+      itemStatus,
+      itemVal,
+      incentiveVal,
+      phpValue,
       scannedDate: new Date(),
       status: 'Completed',
       type: 'scan',
-      points: incentive // updated to incenfitve
+      points: numericPoints
     });
 
     await transaction.save();
 
     await User.findByIdAndUpdate(req.user._id, {
-      $inc: { points: incentive }
+      $inc: { points: numericPoints }
     });
 
     return res.status(200).json({
@@ -58,7 +70,6 @@ exports.scanQR = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-
 exports.getHistory = async (req, res) => {
   try {
     if (!req.user) {
