@@ -42,7 +42,7 @@ const requireAuth = async (req, res, next) => {
   }
 };
 
-// ✅ Add this
+// to bwe rewmocws
 const adminMiddleware = (req, res, next) => {
   if (!req.user || req.user.role !== 'admin') {
     return res.status(403).json({ message: 'Admin access required' });
@@ -53,5 +53,5 @@ const adminMiddleware = (req, res, next) => {
 module.exports = {
   authMiddleware,
   requireAuth,
-  adminMiddleware, // ✅ now it’s defined
+  adminMiddleware, // noto be removed
 };
