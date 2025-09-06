@@ -20,29 +20,29 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-// Optional: cleaner version
-const requireAuth = async (req, res, next) => {
-  try {
-    const authHeader = req.header('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ success: false, error: 'Authentication token missing' });
-    }
+// not used
+// const requireAuth = async (req, res, next) => {
+//   try {
+//     const authHeader = req.header('Authorization');
+//     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+//       return res.status(401).json({ success: false, error: 'Authentication token missing' });
+//     }
 
-    const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     const token = authHeader.split(' ')[1];
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded.id).select('-password');
-    if (!user) return res.status(401).json({ success: false, error: 'User not found' });
+//     const user = await User.findById(decoded.id).select('-password');
+//     if (!user) return res.status(401).json({ success: false, error: 'User not found' });
 
-    req.user = user;
-    next();
-  } catch (error) {
-    console.error('Required Auth Error:', error.message);
-    return res.status(401).json({ success: false, error: 'Invalid or expired token' });
-  }
-};
+//     req.user = user;
+//     next();
+//   } catch (error) {
+//     console.error('Required Auth Error:', error.message);
+//     return res.status(401).json({ success: false, error: 'Invalid or expired token' });
+//   }
+// };
 
-// to bwe rewmocws
+// fixed
 const adminMiddleware = (req, res, next) => {
   if (!req.user || req.user.role !== 'admin') {
     return res.status(403).json({ message: 'Admin access required' });
@@ -52,6 +52,5 @@ const adminMiddleware = (req, res, next) => {
 
 module.exports = {
   authMiddleware,
-  requireAuth,
-  adminMiddleware, // noto be removed
+  adminMiddleware,
 };
